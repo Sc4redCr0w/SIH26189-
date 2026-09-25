@@ -1,0 +1,1086 @@
+SIGNAL ATLAS
+CRIMINAL NETWORK INTELLIGENCE PLATFORM
+WINDOWS DEMONSTRATION GUIDE
+====================================
+
+This file contains the complete local demonstration procedure for the Signal Atlas MVP.
+
+The demonstration uses fictional synthetic data only. It does not contain real police,
+intelligence, financial, location, or person records.
+
+The system is designed to demonstrate evidence traceability, role-based access,
+graph analysis, human review, and grounded AI assistance.
+
+
+1. WHAT THIS DEMONSTRATION PROVES
+=================================
+
+The demonstration should show that:
+
+1. An administrator can authenticate.
+2. An administrator can create, edit, archive, and merge reviewed entities.
+3. An administrator can upload evidence.
+4. Extracted information enters a review queue instead of becoming an automatic fact.
+5. Relationships can point back to evidence.
+6. An analyst can search and explore a graph.
+7. The graph supports cycles, many-to-many links, and multiple relationship types.
+8. Graph analytics can identify structural metrics.
+9. Timeline and geographic views can be filtered.
+10. Analytical signals are presented as review prompts, not legal conclusions.
+11. The assistant answers from stored graph and evidence records.
+12. Reports include evidence references and system limitations.
+13. The auditor can inspect an append-oriented activity trail.
+14. Analysts cannot modify core source data through the backend.
+15. Every important action is logged.
+
+The correct presentation is:
+
+    Observed: A relationship exists in a source-backed graph.
+    Derived: The relationship creates a measurable structural pattern.
+    Analytical: The pattern warrants analyst review.
+    Not established: Criminal liability, intent, or guilt.
+
+
+2. ENVIRONMENT AND ACCOUNTS
+===========================
+
+Repository location:
+
+    D:\Codes\SIH26189-
+
+Required local software:
+
+    Python 3.12 or newer
+    Node.js 20 or newer
+    Git for Windows
+
+Optional services for a production-like deployment:
+
+    PostgreSQL
+    Neo4j
+    Ollama
+    Tesseract or another OCR engine
+
+The zero-service local profile uses:
+
+    SQLite
+    SQLAlchemy
+    A relational graph projection
+    React and Vite
+    FastAPI
+
+Development accounts:
+
+    Administrator
+    Username: admin
+    Password: ChangeMe-Admin-2026!
+
+    Analyst
+    Username: analyst
+    Password: ChangeMe-Analyst-2026!
+
+    Auditor / Supervisor
+    Username: auditor
+    Password: ChangeMe-Auditor-2026!
+
+These credentials are for local demonstration only. Change them in .env before showing
+the application to anyone outside your machine.
+
+
+3. START THE APPLICATION
+========================
+
+Open PowerShell in the repository root:
+
+    cd D:\Codes\SIH26189-
+
+If dependencies have not been installed, run:
+
+    .\scripts\setup.ps1
+
+Start the backend in the first PowerShell window:
+
+    .\scripts\start-backend.ps1
+
+Start the frontend in a second PowerShell window:
+
+    .\scripts\start-frontend.ps1
+
+Open the frontend at:
+
+    http://127.0.0.1:5173
+
+Open API documentation at:
+
+    http://127.0.0.1:8000/docs
+
+Open the API health endpoint at:
+
+    http://127.0.0.1:8000/api/v1/health
+
+A healthy response should contain:
+
+    status: ok
+    database.status: ok
+
+The local frontend and API may already be running if they were started before the
+presentation.
+
+
+4. OPTIONAL AUTOMATED DEMONSTRATION
+===================================
+
+With the backend and frontend running, open another PowerShell window and run:
+
+    .\scripts\demo.ps1
+
+This performs a small API-level demonstration:
+
+1. Checks API health.
+2. Logs in as an Analyst.
+3. Opens a graph around Aarav Mehta.
+4. Runs degree centrality.
+5. Asks the grounded assistant for evidence supporting Aarav Mehta.
+6. Generates a report for the synthetic demonstration case.
+7. Prints a summary.
+
+Expected output is similar to:
+
+    Health            : ok
+    GraphNodes        : 9
+    GraphEdges        : 10 or more
+    AnalysisMetrics   : 10 or more
+    AssistantGrounded : True
+    ReportId          : RPT-...
+
+The exact graph edge count can be higher if you have already created test data.
+
+Run the automated evaluation suite with:
+
+    .\scripts\evaluate.ps1
+
+This should report:
+
+    Backend tests:       27 passed
+    Frontend typecheck:  passed
+    Frontend build:      passed
+
+
+5. ADMINISTRATOR LOGIN
+======================
+
+Open:
+
+    http://127.0.0.1:5173
+
+On the login screen, either type the Administrator credentials or click the Administrator
+development-profile button.
+
+Recommended narration:
+
+    "I am logging in as the Administrator because this role manages source data, evidence,
+    extraction review, and graph mutations."
+
+After login, the Command Center displays:
+
+- Indexed entity count.
+- Evidence count.
+- Relationship count.
+- Current graph preview.
+- Evidence ledger.
+- Grounded assistant.
+- Analytical signal panel.
+
+
+6. EXPLORE THE SEEDED SYNTHETIC NETWORK
+========================================
+
+Open:
+
+    Network Explorer
+
+The seeded fictional case is:
+
+    CASE-2026-001
+
+Important fictional records include:
+
+    Aarav Mehta
+    Rohan Kulkarni
+    Meera Shah
+    Devika Rao
+    Warehouse 9
+    East Port Gate
+    Meridian Logistics
+    MH12AB4821
+    +919820041122
+
+Search for:
+
+    Aarav Mehta
+
+Set the graph depth to:
+
+    2 hops
+
+The graph should contain relationships similar to:
+
+    Aarav Mehta CALLS Rohan Kulkarni
+    Rohan Kulkarni CALLS Meera Shah
+    Meera Shah ASSOCIATED_WITH Devika Rao
+    Aarav Mehta OWNS MH12AB4821
+    Rohan Kulkarni USES +919820041122
+    Aarav Mehta VISITED Warehouse 9
+    Aarav Mehta WORKS_FOR Meridian Logistics
+
+Demonstrate the following:
+
+1. Click a person node.
+2. Read the entity type, status, aliases, notes, and record state.
+3. Click a relationship edge.
+4. Show the relationship type.
+5. Show confidence.
+6. Show the timestamp.
+7. Show the evidence reference.
+8. Show the source excerpt when available.
+9. Change depth from 1 to 3 hops.
+10. Apply a relationship filter such as CALLS.
+11. Apply an entity-type filter such as PERSON.
+12. Apply a date filter.
+13. Focus the selected node.
+14. Reset the graph.
+15. Export the graph as SVG.
+
+Recommended narration:
+
+    "The graph is not a tree. It supports multiple paths, cycles, directed edges,
+    and different relationship types."
+
+
+7. CREATE AND EDIT AN ENTITY
+============================
+
+As Administrator, in Network Explorer click:
+
+    Entity
+
+Create a fictional test record:
+
+    Name: Test Analyst
+    Type: Person
+    Aliases: T. Analyst
+    Status: Unknown
+    Notes: Created for the Windows demonstration.
+
+Save the record.
+
+Search for:
+
+    Test Analyst
+
+Show that the new record is immediately searchable.
+
+Click the record and demonstrate:
+
+- Entity detail.
+- Alias display.
+- Status.
+- Record state.
+- Edit form.
+- Archive control.
+
+Edit a note or status, save it, and show that the change is audit logged.
+
+The Analyst role should not have the Entity mutation controls.
+
+
+8. DEMONSTRATE DUPLICATE DETECTION
+==================================
+
+As Administrator, create another fictional person:
+
+    Name: A. Mehta
+    Type: Person
+    Aliases: Aarav M.
+
+After saving, the system should identify a possible duplicate of:
+
+    Aarav Mehta
+
+Open the entity detail and show:
+
+- Similarity score.
+- Name signal.
+- Alias signal.
+- Structured identifier signal.
+    Recommendation for human review.
+    Merge control.
+
+Explain:
+
+    "The system proposes a possible duplicate. It does not merge automatically."
+
+If you demonstrate Merge:
+
+1. Confirm the merge.
+2. Select Aarav Mehta as the surviving record.
+3. Show the source record being archived.
+4. Show relationship reconciliation.
+5. Show the ENTITY_MERGED audit event.
+
+Do not merge records in a real investigation without human verification and an approved
+reason.
+
+
+9. CREATE A RELATIONSHIP
+========================
+
+In Network Explorer click:
+
+    Relationship
+
+Create a relationship, for example:
+
+    Source: Test Analyst
+    Relationship: ASSOCIATED_WITH
+    Target: Warehouse 9
+    Evidence: Synthetic FIR / network review
+    Recorded time: optional
+
+Save the relationship.
+
+Open the new edge and show its evidence details.
+
+Explain:
+
+    "A relationship is a stored graph assertion with optional confidence, timestamp,
+    and evidence provenance. It is not automatically a legal conclusion."
+
+
+10. UPLOAD EVIDENCE
+====================
+
+Open:
+
+    Evidence Vault
+
+Upload:
+
+    datasets\reports\FIR_001.txt
+
+Recommended metadata:
+
+    Title: Synthetic FIR demonstration
+    Category: FIR
+    Case: CASE-2026-001
+
+The file is explicitly fictional.
+
+The system should:
+
+1. Validate the extension.
+2. Validate the file size.
+3. Store the file below the managed upload directory.
+4. Create an evidence ID.
+5. Extract a text preview.
+6. Set the processing status.
+7. Record the upload in the audit trail.
+
+You can also upload:
+
+    datasets\cdr.csv
+    datasets\transactions.csv
+
+Invalid-file demonstration:
+
+Try to upload a file such as:
+
+    payload.exe
+
+The system should reject it with a file-type validation error.
+
+Do not upload real investigative data without authorization and data-governance approval.
+
+
+11. EXTRACTION AND HUMAN REVIEW
+===============================
+
+In the Evidence Vault, click:
+
+    Extract
+
+The deterministic extractor can identify candidate values such as:
+
+    PERSON
+    PHONE
+    VEHICLE
+    LOCATION
+    DATE
+    RELATIONSHIP
+
+Open:
+
+    Review Queue
+
+Show each candidate's:
+
+- Candidate type.
+- Candidate value.
+- Confidence.
+- Source span.
+- Evidence reference.
+- Approve button.
+- Reject button.
+
+Approve one candidate and reject another.
+
+Explain:
+
+    "Extraction produces candidates. Human approval is required before the candidate
+    becomes trusted graph data."
+
+The current implementation has basic TXT/CSV extraction. OCR for scanned PDFs and images
+is not enabled in the local MVP.
+
+
+12. UNIFIED SEARCH
+==================
+
+Open:
+
+    Search Workspace
+
+Try:
+
+    Aarav
+
+Try:
+
+    Warehouse
+
+Try:
+
+    CASE-2026-001
+
+Show the result types:
+
+    ENTITY
+    CASE
+    EVIDENCE
+
+Apply filters for:
+
+- Case.
+- Entity type.
+- Status.
+- Evidence source.
+
+Explain:
+
+    "Search is over stored records and source material, not an unrestricted AI answer."
+
+
+13. GRAPH ANALYTICS
+====================
+
+Open:
+
+    Network Explorer
+
+Run:
+
+    Degree
+
+Run:
+
+    Betweenness
+
+Run:
+
+    PageRank
+
+For each result, show:
+
+- Rank.
+- Entity name.
+- Metric value.
+- Explanation.
+- Link back to the entity.
+
+Correct interpretation:
+
+    "This entity has high structural connectivity in the selected graph."
+
+Incorrect interpretation:
+
+    "This entity is criminal."
+
+The system intentionally separates structural measurement from legal status.
+
+The analytics are stored as analysis runs and audit events.
+
+
+14. TEMPORAL ANALYSIS
+=====================
+
+Open:
+
+    Timeline
+
+Show:
+
+- Daily relationship activity.
+- Relationship appearance.
+- Relationship disappearance from end_time.
+- Cumulative relationship count.
+- Peak day.
+- Case filter.
+
+The synthetic data uses September 2026 dates.
+
+Explain:
+
+    "The timeline shows observed relationship activity over time. It does not establish
+    why the activity occurred."
+
+
+15. GEOGRAPHIC ANALYSIS
+========================
+
+Open:
+
+    Geographic View
+
+Show:
+
+    Warehouse 9
+
+The system plots only entities with explicit latitude and longitude metadata.
+
+Explain:
+
+    "The system does not guess coordinates from a name or free-text address. An entity
+    without coordinates remains unplotted."
+
+The local map is an offline coordinate surface. It does not call an external geocoder.
+
+
+16. ANALYTICAL SIGNALS
+=======================
+
+Return to the Command Center.
+
+Click:
+
+    Run scan
+
+Show possible signal categories:
+
+- Communication spike.
+- High-connectivity structure.
+- Network expansion or bridge candidate.
+- Repeated location context.
+- Disconnected community.
+
+For every signal, show:
+
+- Signal type.
+- Severity.
+- Explanation.
+- Entity references.
+- Relationship references.
+- Evidence references.
+- Requires-review flag.
+
+Use this wording:
+
+    "Analytical signal detected. This is unusual compared with the selected baseline
+    and requires analyst review."
+
+Do not say:
+
+    "The system detected a criminal network."
+
+
+17. GROUNDED AI ASSISTANT
+=========================
+
+Return to the Command Center.
+
+Ask:
+
+    What evidence supports Aarav Mehta and Rohan Kulkarni?
+
+Ask:
+
+    Show Aarav Mehta's second-degree connections
+
+Ask:
+
+    Summarize the selected network.
+
+Show:
+
+- Grounded indicator.
+- Retrieved entities.
+- Relationship facts.
+- Evidence titles.
+- Evidence IDs.
+- Disclaimer.
+
+Then ask about a name that is not stored:
+
+    Tell me about a person who is not in the graph.
+
+The assistant should state that it cannot identify stored context and should not fabricate
+an answer.
+
+The assistant flow is:
+
+    Question
+        -> Entity retrieval
+        -> Relationship retrieval
+        -> Evidence retrieval
+        -> Structured facts
+        -> Optional Ollama phrasing
+        -> Answer with citations
+
+The LLM is not the source of truth.
+
+
+18. CASES
+==========
+
+Open:
+
+    Cases
+
+Show the seeded case:
+
+    CASE-2026-001
+
+Create a new fictional case:
+
+    Case number: CASE-DEMO-2026-002
+    Title: Synthetic follow-up review
+    Description: Fictional case created for the demonstration.
+
+The API and case model support:
+
+- Case notes.
+- Case history.
+- Entity attachment.
+- Evidence attachment.
+- Saved searches.
+- Saved graph views.
+- Case-specific reports.
+
+The current MVP case cards do not expose every one of those detail panels in the UI, but
+the APIs and tests are available.
+
+
+19. REPORTS
+===========
+
+Open:
+
+    Reports
+
+Generate a report from stored records.
+
+Use:
+
+    Report title: Windows demonstration report
+    Case: CASE-2026-001
+    Analyst note: This report is generated from fictional source-backed records.
+
+Click:
+
+    Generate report
+
+Then click:
+
+    Run multi-agent synthesis
+
+The synthesis includes:
+
+- Demographic analysis.
+- Temporal analysis.
+- Geographic analysis.
+- Network analysis.
+- Evidence/source analysis.
+- Aggregated findings.
+- System limitations.
+
+Export a report as:
+
+    Markdown
+    HTML
+
+PDF export is not implemented in the current MVP.
+
+
+20. AUDITOR DEMONSTRATION
+==========================
+
+Logout from the Administrator account.
+
+Login as:
+
+    auditor
+
+Open:
+
+    Audit Trail
+
+Show events such as:
+
+    LOGIN_SUCCESS
+    LOGIN_FAILURE
+    LOGOUT
+    ENTITY_CREATED
+    ENTITY_UPDATED
+    ENTITY_ARCHIVED
+    ENTITY_MERGED
+    RELATIONSHIP_CREATED
+    EVIDENCE_UPLOADED
+    AI_EXTRACTION_APPROVED
+    AI_EXTRACTION_REJECTED
+    SEARCH_PERFORMED
+    GRAPH_ANALYSIS_RUN
+    AI_QUERY_EXECUTED
+    REPORT_GENERATED
+    PATTERN_SIGNALS_GENERATED
+
+Show:
+
+- Action.
+- Resource.
+- Actor.
+- Timestamp.
+- Details.
+
+Explain:
+
+    "The audit trail is append-oriented through the API. There is no normal user update
+    or delete route for audit records."
+
+The Auditor can inspect history but cannot manage users or mutate source data.
+
+
+21. ANALYST READ-ONLY DEMONSTRATION
+=====================================
+
+Logout and login as:
+
+    analyst
+
+Show that the Analyst can:
+
+- Search.
+- Explore the graph.
+- Run analytics.
+- Use the assistant.
+- View evidence.
+- Generate reports.
+- Add case notes.
+
+Show that the Analyst cannot:
+
+- Create or edit entities.
+- Upload evidence.
+- Approve extraction candidates.
+- Merge entities.
+- Manage users.
+
+If you want to demonstrate the server-side rule from PowerShell, use:
+
+    $api = "http://127.0.0.1:8000/api/v1"
+    $login = Invoke-RestMethod `
+      -Uri "$api/auth/login" `
+      -Method Post `
+      -ContentType "application/json" `
+      -Body '{"username":"analyst","password":"ChangeMe-Analyst-2026!"}'
+
+    $headers = @{
+      Authorization = "Bearer $($login.access_token)"
+    }
+
+    Invoke-RestMethod `
+      -Uri "$api/entities" `
+      -Method Post `
+      -Headers $headers `
+      -ContentType "application/json" `
+      -Body '{"name":"Should Be Blocked","entity_type":"PERSON"}'
+
+The final request should return HTTP 403.
+
+
+22. FRESH RESET FOR A REPEATABLE DEMO
+=======================================
+
+Only use this when you want to delete local demonstration data.
+
+First stop the backend and frontend processes.
+
+Then run:
+
+    Remove-Item backend\data\cni.db -Force -ErrorAction SilentlyContinue
+    Remove-Item backend\storage\uploads -Recurse -Force -ErrorAction SilentlyContinue
+
+Restart the backend:
+
+    .\scripts\start-backend.ps1
+
+The application will recreate the synthetic seed case on startup.
+
+Warning:
+
+    These commands delete local SQLite data and uploaded files. Do not run them against
+    a real investigation database.
+
+
+23. WHAT CAN BE PERFORMED
+==========================
+
+Administrator:
+
+- Manage users.
+- Create, edit, and archive entities.
+- Merge reviewed duplicates.
+- Create and update relationships.
+- Upload evidence.
+- Run extraction.
+- Approve or reject candidates.
+- Create cases and notes.
+- Generate reports.
+- Run analytics.
+- Review audit history.
+
+Analyst:
+
+- Search entities, cases, and evidence.
+- Explore graphs.
+- Run structural, temporal, geographic, and signal analysis.
+- Use the grounded assistant.
+- Add case notes.
+- Save searches and graph views.
+- Generate reports.
+
+Auditor / Supervisor:
+
+- Inspect records.
+- Review audit history.
+- Inspect analysis and evidence context.
+- Export audit records.
+
+Nobody should be able to bypass these rules through the frontend alone. Authorization is
+enforced by FastAPI dependencies on the backend.
+
+
+24. WHAT CAN BE SEEN
+====================
+
+The application can show:
+
+- Active and archived entity records.
+- Aliases and normalized names.
+- Entity types and statuses.
+- Directed relationship types.
+- Confidence values.
+- Evidence IDs and source excerpts.
+- Duplicate candidates and merge state.
+- Extraction candidates.
+- Review status.
+- Graph depth and filters.
+- Degree and betweenness rankings.
+- PageRank scores.
+- Connected components.
+- Timeline activity.
+- Explicit-coordinate map points.
+- Analytical signals.
+- Case context.
+- Saved searches and graph views.
+- Report versions and snapshots.
+- Audit events.
+
+Node colors are semantic:
+
+- Red: source-recorded status.
+- Orange: recorded investigation/charge status.
+- Yellow: analytical review required.
+- Blue: relevant association.
+- Gray: unknown or unresolved.
+
+A yellow node does not mean criminal. It means the record or pattern requires review.
+
+
+25. WHAT CAN BE INFERRED
+==========================
+
+The system can calculate or summarize:
+
+Directly observed:
+
+- Stored calls.
+- Stored associations.
+- Stored ownership.
+- Stored location visits.
+- Stored organization membership.
+- Stored transactions.
+- Stored evidence references.
+
+Derived:
+
+- Direct degree.
+- Second-degree neighborhoods.
+- High-betweenness structure.
+- PageRank.
+- Connected components.
+- Relationship paths.
+- Repeated location context.
+- Duplicate similarity.
+- Daily relationship activity.
+- Cumulative network growth.
+
+Analytical:
+
+- Communication spikes.
+- High-connectivity structures.
+- Bridge candidates.
+- Disconnected communities.
+- Relationship patterns requiring review.
+
+AI-assisted:
+
+- Evidence-backed summaries.
+- Retrieved entity lists.
+- Two-degree explanations.
+- Case/network summaries.
+- Citations to source records.
+
+
+26. WHAT MUST NOT BE INFERRED
+==============================
+
+The system must not claim that:
+
+- A person is guilty.
+- A person is a criminal.
+- A relationship proves criminal intent.
+- A high-degree person is an offender.
+- A location is a crime scene.
+- A transaction is illegal.
+- A missing coordinate can be guessed.
+- An extracted candidate is trusted before review.
+- An AI answer is factual without citations.
+- An analytical signal is a legal conclusion.
+
+Use this wording:
+
+    "The graph shows this relationship."
+    "The analytics show this structural position."
+    "This pattern warrants review."
+    "The evidence record supports the stored relationship."
+
+Avoid this wording:
+
+    "The system knows this person is criminal."
+    "The AI proved guilt."
+    "This entity is an offender."
+
+
+27. OPTIONAL OLLAMA DEMONSTRATION
+==================================
+
+Ollama is optional and disabled by default.
+
+Install Ollama on Windows if it is approved for the demonstration.
+
+Set these values in .env:
+
+    CNI_OLLAMA_ENABLED=true
+    CNI_OLLAMA_URL=http://127.0.0.1:11434
+    CNI_OLLAMA_MODEL=llama3.2:3b
+
+Restart the backend.
+
+The assistant still retrieves graph and evidence records before calling Ollama.
+
+If Ollama is stopped or unreachable, the deterministic grounded response remains available.
+
+The model is used for phrasing only. It is not allowed to invent facts, relationships,
+legal statuses, or evidence references.
+
+
+28. OPTIONAL CSV IMPORT
+=======================
+
+The Windows helper script is:
+
+    .\scripts\import-synthetic.ps1
+
+Or use the Admin API:
+
+    POST /api/v1/imports/csv
+
+The importer:
+
+1. Accepts UTF-8 CSV files.
+2. Stores the source file as evidence.
+3. Creates entity records where appropriate.
+4. Creates candidate relationships where source and target IDs are present.
+5. Marks the import as review-required.
+6. Records a CSV_IMPORTED audit event.
+
+Imported relationships are not silently treated as fully trusted.
+
+
+29. TROUBLESHOOTING
+===================
+
+Backend not found:
+
+    .\scripts\setup.ps1
+    .\scripts\start-backend.ps1
+
+Frontend not found:
+
+    cd frontend
+    npm install
+    cd ..
+    .\scripts\start-frontend.ps1
+
+API health check:
+
+    Invoke-RestMethod http://127.0.0.1:8000/api/v1/health
+
+Frontend check:
+
+    Invoke-WebRequest http://127.0.0.1:5173
+
+Run all automated checks:
+
+    .\scripts\verify.ps1
+
+Run the full evaluation:
+
+    .\scripts\evaluate.ps1
+
+If a local database is corrupted, stop the servers and use the fresh-reset procedure in
+section 22 only after confirming that the data is disposable.
+
+
+30. CLOSING STATEMENT
+======================
+
+A strong closing statement is:
+
+    "This prototype demonstrates a traceable path from source evidence to reviewed graph
+    facts, structural analysis, grounded AI assistance, and an audit trail. It shows
+    how an investigator can reason over relationships without allowing the interface
+    or the language model to silently turn an analytical signal into a legal conclusion."
+
+
+END OF DEMONSTRATION GUIDE
+============================
