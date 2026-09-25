@@ -1,0 +1,5 @@
+person_id,name,entity_type,status,aliases,notes
+P-1001,Aarav Mehta,PERSON,UNKNOWN,"A. Mehta, Aarav M.",Synthetic demonstration record
+P-1002,Rohan Kulkarni,PERSON,UNKNOWN,"R. Kulkarni",Synthetic demonstration record
+P-1003,Meera Shah,PERSON,RELEVANT,"M. Shah",Synthetic demonstration record
+P-1004,Devika Rao,PERSON,UNKNOWN,"D. Rao",Synthetic demonstration record

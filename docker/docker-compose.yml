@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["optional"]
+    environment:
+      POSTGRES_DB: cni
+      POSTGRES_USER: cni
+      POSTGRES_PASSWORD: change-me
+    ports:
+      - "5432:5432"
+    volumes:
+      - cni-postgres:/var/lib/postgresql/data
+
+  neo4j:
+    image: neo4j:5-community
+    profiles: ["optional"]
+    environment:
+      NEO4J_AUTH: neo4j/change-me
+      NEO4J_PLUGINS: '["apoc"]'
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - cni-neo4j:/data
+
+volumes:
+  cni-postgres:
+  cni-neo4j:

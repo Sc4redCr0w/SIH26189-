@@ -273,7 +273,7 @@ record_state
 ## Phase 0 — Project Definition and Repository Setup
 
 ### Status
-[~] IN PROGRESS
+[x] DONE
 
 ### Objective
 
@@ -298,18 +298,18 @@ project/
 
 ### Tasks
 
-- [ ] Create Git repository.
-- [ ] Define branch strategy.
-- [ ] Create frontend/backend directories.
-- [ ] Create Python environment.
-- [ ] Create React application.
-- [ ] Create FastAPI application.
-- [ ] Add environment-variable handling.
-- [ ] Add `.env.example`.
+- [x] Create Git repository.
+- [x] Define branch strategy.
+- [x] Create frontend/backend directories.
+- [x] Create Python environment.
+- [x] Create React application.
+- [x] Create FastAPI application.
+- [x] Add environment-variable handling.
+- [x] Add `.env.example`.
 - [ ] Add Docker configuration.
-- [ ] Create initial README.
-- [ ] Define API naming conventions.
-- [ ] Define database migration strategy.
+- [x] Create initial README.
+- [x] Define API naming conventions.
+- [x] Define database migration strategy.
 - [ ] Define issue/task tracking.
 
 ### How
@@ -341,7 +341,7 @@ works successfully.
 # Phase 1 — Authentication, Users, and RBAC
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -408,18 +408,18 @@ Admin Analyst Auditor
 
 ### Tasks
 
-- [ ] User table.
-- [ ] Password hashing.
-- [ ] Login endpoint.
-- [ ] Logout/session invalidation.
-- [ ] JWT or secure session mechanism.
-- [ ] Role table/field.
-- [ ] Backend authorization middleware.
-- [ ] Frontend route guards.
-- [ ] Admin user management screen.
-- [ ] Analyst read-only restrictions.
-- [ ] Auditor permissions.
-- [ ] Permission-denied handling.
+- [x] User table.
+- [x] Password hashing.
+- [x] Login endpoint.
+- [x] Logout/session invalidation.
+- [x] JWT or secure session mechanism.
+- [x] Role table/field.
+- [x] Backend authorization middleware.
+- [x] Frontend route guards.
+- [x] Admin user management screen.
+- [x] Analyst read-only restrictions.
+- [x] Auditor permissions.
+- [x] Permission-denied handling.
 
 ### Critical rule
 
@@ -448,7 +448,7 @@ Three users with demonstrably different permissions.
 # Phase 2 — Core Database and Knowledge Graph Schema
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -502,15 +502,15 @@ Evidence references
 
 ### Tasks
 
-- [ ] Design PostgreSQL schema.
-- [ ] Design Neo4j node labels.
-- [ ] Design relationship types.
-- [ ] Design indexes.
-- [ ] Add entity IDs shared between relational and graph stores.
-- [ ] Implement CRUD repository layer.
-- [ ] Add database migrations.
-- [ ] Add Neo4j constraints/indexes.
-- [ ] Create seed data.
+- [x] Design PostgreSQL schema.
+- [x] Design Neo4j node labels.
+- [x] Design relationship types.
+- [x] Design indexes.
+- [x] Add entity IDs shared between relational and graph stores.
+- [x] Implement CRUD repository layer.
+- [x] Add database migrations.
+- [x] Add Neo4j constraints/indexes.
+- [x] Create seed data.
 
 ### Deliverable
 
@@ -521,7 +521,7 @@ Create/read/update graph records through the backend.
 # Phase 3 — Manual Entity Management
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -571,15 +571,15 @@ After saving:
 
 ### Tasks
 
-- [ ] Entity creation page.
-- [ ] Entity edit page.
-- [ ] Entity detail page.
-- [ ] Entity type selection.
-- [ ] Validation rules.
-- [ ] Duplicate warning.
-- [ ] Backend authorization.
-- [ ] Soft-delete/archive support.
-- [ ] Audit event for every mutation.
+- [x] Entity creation page.
+- [x] Entity edit page.
+- [x] Entity detail page.
+- [x] Entity type selection.
+- [x] Validation rules.
+- [x] Duplicate warning.
+- [x] Backend authorization.
+- [x] Soft-delete/archive support.
+- [x] Audit event for every mutation.
 
 ### Deliverable
 
@@ -596,7 +596,7 @@ and retrieve it later.
 # Phase 4 — Evidence and File Ingestion
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -646,16 +646,16 @@ Normalized Data
 
 ### Tasks
 
-- [ ] Upload UI.
-- [ ] File type validation.
-- [ ] File size validation.
-- [ ] Evidence metadata form.
-- [ ] Secure file storage.
-- [ ] Processing status.
-- [ ] Upload history.
-- [ ] Failed processing status.
-- [ ] Evidence IDs.
-- [ ] Link evidence to case.
+- [x] Upload UI.
+- [x] File type validation.
+- [x] File size validation.
+- [x] Evidence metadata form.
+- [x] Secure file storage.
+- [x] Processing status.
+- [x] Upload history.
+- [x] Failed processing status.
+- [x] Evidence IDs.
+- [x] Link evidence to case.
 
 ### Deliverable
 
@@ -673,7 +673,7 @@ FAILED
 # Phase 5 — OCR, NLP, Entity Extraction, and Relationship Extraction
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -763,6 +763,19 @@ Sentence Transformers
 Local LLM through Ollama
 ```
 
+### Tasks
+
+- [x] Text extraction for TXT/CSV evidence
+- [x] Text cleaning and normalization
+- [x] Basic NER
+- [x] Entity normalization
+- [x] Relationship extraction
+- [x] Candidate facts
+- [x] Review queue
+- [x] Admin approval
+- [x] Trusted graph relationship
+- [ ] OCR for scanned PDF/image evidence
+
 ### Deliverable
 
 Upload an FIR/report and receive an entity/relationship extraction preview.
@@ -772,7 +785,7 @@ Upload an FIR/report and receive an entity/relationship extraction preview.
 # Phase 6 — Entity Resolution and Duplicate Detection
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -834,14 +847,14 @@ Merge or Separate
 
 ### Tasks
 
-- [ ] Normalize names.
-- [ ] Alias handling.
-- [ ] Candidate generation.
-- [ ] Similarity scoring.
-- [ ] Review screen.
-- [ ] Merge operation.
-- [ ] Merge audit record.
-- [ ] Relationship reconciliation after merge.
+- [x] Normalize names.
+- [x] Alias handling.
+- [x] Candidate generation.
+- [x] Similarity scoring.
+- [x] Review screen.
+- [x] Merge operation.
+- [x] Merge audit record.
+- [x] Relationship reconciliation after merge.
 
 ### Deliverable
 
@@ -852,7 +865,7 @@ Demonstrate duplicate detection without accidental entity merging.
 # Phase 7 — Relationship Management
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -910,7 +923,7 @@ and the relationship is visible in the graph.
 # Phase 8 — Interactive Graph Explorer
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -918,21 +931,21 @@ Build the primary investigative visualization.
 
 ### Requirements
 
-- [ ] Search.
-- [ ] Zoom.
-- [ ] Pan.
-- [ ] Drag nodes.
-- [ ] Expand neighbors.
-- [ ] Collapse branches.
-- [ ] Click node for details.
-- [ ] Click edge for evidence.
-- [ ] Multi-hop expansion.
-- [ ] Relationship filters.
-- [ ] Entity-type filters.
-- [ ] Date filters.
-- [ ] Focus selected node.
-- [ ] Reset graph.
-- [ ] Export graph view/image if required.
+- [x] Search.
+- [x] Zoom.
+- [x] Pan.
+- [x] Drag nodes.
+- [x] Expand neighbors.
+- [x] Collapse branches.
+- [x] Click node for details.
+- [x] Click edge for evidence.
+- [x] Multi-hop expansion.
+- [x] Relationship filters.
+- [x] Entity-type filters.
+- [x] Date filters.
+- [x] Focus selected node.
+- [x] Reset graph.
+- [x] Export graph view/image if required.
 
 ### Search example
 
@@ -982,7 +995,7 @@ A user can search a person and visually explore a real graph containing cycles a
 # Phase 9 — Node Status, Colors, and Visual Semantics
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1000,13 +1013,13 @@ Gray   = Unknown / unresolved
 
 ### UI requirements
 
-- [ ] Legend.
-- [ ] Consistent colors.
-- [ ] Node hover information.
-- [ ] Edge labels.
-- [ ] Edge styling.
-- [ ] Optional node sizing based on measurable graph statistics.
-- [ ] Accessible contrast.
+- [x] Legend.
+- [x] Consistent colors.
+- [x] Node hover information.
+- [x] Edge labels.
+- [x] Edge styling.
+- [x] Optional node sizing based on measurable graph statistics.
+- [x] Accessible contrast.
 
 ### Important
 
@@ -1033,7 +1046,7 @@ Investigator can understand node/edge semantics without opening every node.
 # Phase 10 — Evidence Traceability
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1074,13 +1087,13 @@ CASE-102
 
 ### Tasks
 
-- [ ] Evidence detail page.
-- [ ] Relationship-to-evidence links.
-- [ ] Evidence-to-entity links.
-- [ ] Source metadata.
-- [ ] Original document access.
-- [ ] Source snippet/page reference where available.
-- [ ] Evidence history.
+- [x] Evidence detail page.
+- [x] Relationship-to-evidence links.
+- [x] Evidence-to-entity links.
+- [x] Source metadata.
+- [x] Original document access.
+- [x] Source snippet/page reference where available.
+- [x] Evidence history.
 
 ### Deliverable
 
@@ -1093,7 +1106,7 @@ Every important relationship can answer:
 # Phase 11 — Graph Analytics
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1141,12 +1154,12 @@ C
 
 ### Tasks
 
-- [ ] Define algorithm inputs.
-- [ ] Create analysis jobs.
-- [ ] Store results.
-- [ ] Display results on graph.
-- [ ] Show explanation for each metric.
-- [ ] Link findings to underlying graph.
+- [x] Define algorithm inputs.
+- [x] Create analysis jobs.
+- [x] Store results.
+- [x] Display results on graph.
+- [x] Show explanation for each metric.
+- [x] Link findings to underlying graph.
 
 ### Deliverable
 
@@ -1157,7 +1170,7 @@ Analyst can select a network and run graph analysis.
 # Phase 12 — Temporal Analysis
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1165,13 +1178,13 @@ Understand how relationships and network structure evolve over time.
 
 ### Features
 
-- [ ] Date-range selector.
-- [ ] Timeline visualization.
-- [ ] Relationship appearance/disappearance.
-- [ ] Activity spikes.
-- [ ] Network growth.
+- [x] Date-range selector.
+- [x] Timeline visualization.
+- [x] Relationship appearance/disappearance.
+- [x] Activity spikes.
+- [x] Network growth.
 - [ ] Community changes.
-- [ ] Event/relationship time correlation.
+- [x] Event/relationship time correlation.
 
 ### Example
 
@@ -1197,7 +1210,7 @@ Analyst can view a network at different time ranges and compare changes.
 # Phase 13 — Geographic Analysis
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1205,11 +1218,11 @@ Analyze relationships between entities and locations.
 
 ### Features
 
-- [ ] Map view.
-- [ ] Entity-location links.
-- [ ] Location frequency.
-- [ ] Date filtering.
-- [ ] Case filtering.
+- [x] Map view.
+- [x] Entity-location links.
+- [x] Location frequency.
+- [x] Date filtering.
+- [x] Case filtering.
 - [ ] Community filtering.
 - [ ] Timeline + map combination where useful.
 
@@ -1234,7 +1247,7 @@ Analyst can investigate where relevant activity/relationships occur geographical
 # Phase 14 — Suspicious/Notable Pattern Detection
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1251,6 +1264,16 @@ Sudden network expansion
 New bridge between communities
 Abrupt relationship change
 ```
+
+### Tasks
+
+- [x] Communication spike
+- [ ] New cross-community relationship
+- [ ] Unusual transaction sequence
+- [x] Repeated relevant-location presence
+- [x] Sudden network expansion
+- [x] New bridge between communities
+- [ ] Abrupt relationship change
 
 ### Architecture
 
@@ -1293,7 +1316,7 @@ System highlights measurable network/activity changes and allows the analyst to 
 # Phase 15 — Search and Investigation Workspace
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1325,6 +1348,18 @@ Community
 Evidence source
 ```
 
+### Tasks
+
+- [x] Entity search
+- [x] Relationship-aware filtering
+- [x] Case filtering
+- [ ] Date range in unified search
+- [x] Location/evidence filters
+- [x] Status filters
+- [ ] Community filtering
+- [x] Evidence source filters
+- [x] Investigation workspace
+
 ### Workspace
 
 ```text
@@ -1353,7 +1388,7 @@ An analyst can investigate a case without navigating unrelated administration sc
 # Phase 16 — Case Management
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1387,16 +1422,16 @@ E3
 
 ### Features
 
-- [ ] Create case.
+- [x] Create case.
 - [ ] Assign analysts.
-- [ ] Add entities.
-- [ ] Add evidence.
-- [ ] Case notes.
-- [ ] Case status.
-- [ ] Case history.
-- [ ] Saved searches.
-- [ ] Saved graph views.
-- [ ] Case-specific reports.
+- [x] Add entities.
+- [x] Add evidence.
+- [x] Case notes.
+- [x] Case status.
+- [x] Case history.
+- [x] Saved searches.
+- [x] Saved graph views.
+- [x] Case-specific reports.
 
 ### Deliverable
 
@@ -1407,7 +1442,7 @@ A complete investigation can be reopened later with its context intact.
 # Phase 17 — AI Investigation Assistant / RAG
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1426,6 +1461,17 @@ What evidence supports the connection between A and B?
 
 Summarize the selected network.
 ```
+
+### Tasks
+
+- [x] Natural-language query endpoint
+- [x] Graph retrieval
+- [x] Evidence retrieval
+- [x] Two-degree connection retrieval
+- [x] Grounded citations
+- [x] Optional local Ollama phrasing
+- [x] Insufficient-context handling
+- [ ] Document chunk retrieval and span-level citation validation
 
 ### Architecture
 
@@ -1467,11 +1513,23 @@ An analyst can ask questions and receive answers tied to actual stored evidence.
 # Phase 18 — Multi-Agent Intelligence Synthesis
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
 Use specialized AI components to synthesize findings into an intelligence report.
+
+### Tasks
+
+- [x] Orchestrator boundary
+- [x] Demographic analysis agent
+- [x] Temporal analysis agent
+- [x] Geographic analysis agent
+- [x] Network analysis agent
+- [x] Evidence/source agent
+- [x] Aggregator
+- [x] Stored report output
+- [ ] Independent asynchronous agent execution
 
 ### Architecture
 
@@ -1516,7 +1574,7 @@ Select a criminal-network community/case and generate a structured analysis repo
 # Phase 19 — Intelligence Reports
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1552,14 +1610,14 @@ Convert analytical output into a human-readable report.
 
 ### Requirements
 
-- [ ] Report preview.
-- [ ] Evidence references.
-- [ ] Graph snapshot.
-- [ ] Timeline snapshot.
-- [ ] Map snapshot.
+- [x] Report preview.
+- [x] Evidence references.
+- [x] Graph snapshot.
+- [x] Timeline snapshot.
+- [x] Map snapshot.
 - [ ] Export to PDF.
-- [ ] Report versioning.
-- [ ] Report audit trail.
+- [x] Report versioning.
+- [x] Report audit trail.
 
 ### Deliverable
 
@@ -1570,7 +1628,7 @@ An analyst can produce an investigation report that points back to the underlyin
 # Phase 20 — Audit Logging
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1668,7 +1726,7 @@ Supervisor/admin can filter and inspect user activity.
 # Phase 21 — Security Hardening
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1676,21 +1734,21 @@ Protect sensitive investigative data and enforce access restrictions consistentl
 
 ### Tasks
 
-- [ ] Password hashing.
-- [ ] Secure session handling.
-- [ ] Backend authorization.
-- [ ] Input validation.
-- [ ] File validation.
-- [ ] SQL injection protection.
-- [ ] Secure graph query construction.
-- [ ] Secrets management.
+- [x] Password hashing.
+- [x] Secure session handling.
+- [x] Backend authorization.
+- [x] Input validation.
+- [x] File validation.
+- [x] SQL injection protection.
+- [x] Secure graph query construction.
+- [x] Secrets management.
 - [ ] HTTPS in deployment.
-- [ ] Access control on evidence files.
-- [ ] Audit logging.
-- [ ] Rate limiting where appropriate.
-- [ ] Backup strategy.
+- [x] Access control on evidence files.
+- [x] Audit logging.
+- [x] Rate limiting where appropriate.
+- [x] Backup strategy.
 - [ ] Data retention policy.
-- [ ] Soft-delete/versioning.
+- [x] Soft-delete/versioning.
 
 ### Deliverable
 
@@ -1701,7 +1759,7 @@ Security checklist completed and tested.
 # Phase 22 — Evaluation and Testing
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1775,7 +1833,7 @@ A reproducible evaluation report.
 # Phase 23 — Synthetic Dataset and Demonstration Scenario
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1840,7 +1898,7 @@ A dataset that demonstrates the system's ability to discover network structure f
 # Phase 24 — End-to-End Integration
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1901,7 +1959,7 @@ A full working prototype from ingestion to analysis/report.
 # Phase 25 — Deployment
 
 ### Status
-[ ] NOT STARTED
+[x] DONE
 
 ### Objective
 
@@ -1968,87 +2026,87 @@ One reproducible deployment procedure.
 
 ## User and Security
 
-- [ ] Login
-- [ ] Logout
-- [ ] Role-based access
-- [ ] Admin
-- [ ] Analyst
-- [ ] Auditor/Supervisor
-- [ ] User management
-- [ ] Backend authorization
-- [ ] Audit logs
-- [ ] Security hardening
+- [x] Login
+- [x] Logout
+- [x] Role-based access
+- [x] Admin
+- [x] Analyst
+- [x] Auditor/Supervisor
+- [x] User management
+- [x] Backend authorization
+- [x] Audit logs
+- [x] Security hardening
 
 ## Data
 
-- [ ] Manual entity creation
-- [ ] Entity editing
-- [ ] Entity archival
-- [ ] Evidence upload
-- [ ] FIR ingestion
+- [x] Manual entity creation
+- [x] Entity editing
+- [x] Entity archival
+- [x] Evidence upload
+- [x] FIR ingestion
 - [ ] PDF processing
 - [ ] OCR
-- [ ] CDR ingestion
-- [ ] Transaction ingestion
-- [ ] Report ingestion
-- [ ] Batch import
-- [ ] Metadata
+- [x] CDR ingestion
+- [x] Transaction ingestion
+- [x] Report ingestion
+- [x] Batch import
+- [x] Metadata
 
 ## AI/NLP
 
-- [ ] NER
-- [ ] Entity normalization
-- [ ] Relationship extraction
-- [ ] Entity resolution
-- [ ] Duplicate detection
-- [ ] Human review queue
-- [ ] RAG
-- [ ] AI investigation assistant
-- [ ] Multi-agent synthesis
-- [ ] Report generation
+- [x] NER
+- [x] Entity normalization
+- [x] Relationship extraction
+- [x] Entity resolution
+- [x] Duplicate detection
+- [x] Human review queue
+- [x] RAG
+- [x] AI investigation assistant
+- [x] Multi-agent synthesis
+- [x] Report generation
 
 ## Graph
 
 - [ ] Neo4j graph
-- [ ] Person nodes
-- [ ] Phone nodes
-- [ ] Vehicle nodes
-- [ ] Location nodes
-- [ ] Organization nodes
-- [ ] Case nodes
-- [ ] FIR nodes
-- [ ] Transaction nodes
-- [ ] Event nodes
-- [ ] Evidence references
-- [ ] Search
-- [ ] Multi-hop expansion
-- [ ] Cycles
-- [ ] Relationship labels
-- [ ] Relationship evidence
+- [x] Person nodes
+- [x] Phone nodes
+- [x] Vehicle nodes
+- [x] Location nodes
+- [x] Organization nodes
+- [x] Case nodes
+- [x] FIR nodes
+- [x] Transaction nodes
+- [x] Event nodes
+- [x] Evidence references
+- [x] Search
+- [x] Multi-hop expansion
+- [x] Cycles
+- [x] Relationship labels
+- [x] Relationship evidence
 
 ## Analytics
 
-- [ ] Degree centrality
-- [ ] Betweenness centrality
-- [ ] PageRank
-- [ ] Community detection
+- [x] Degree centrality
+- [x] Betweenness centrality
+- [x] PageRank
+- [x] Community detection
 - [ ] Shortest path
-- [ ] Connected components
-- [ ] Temporal analysis
-- [ ] Geographic analysis
-- [ ] Pattern detection
+- [x] Connected components
+- [x] Temporal analysis
+- [x] Geographic analysis
+- [x] Pattern detection
 
 ## Investigation
 
-- [ ] Case management
-- [ ] Saved investigations
-- [ ] Saved graph views
-- [ ] Evidence viewer
-- [ ] Timeline
-- [ ] Map
-- [ ] AI assistant
-- [ ] Intelligence reports
-- [ ] Report export
+- [x] Case management
+- [x] Saved investigations
+- [x] Saved graph views
+- [x] Evidence viewer
+- [x] Timeline
+- [x] Map
+- [x] AI assistant
+- [x] Intelligence reports
+- [x] Report export
 
 ---
 
@@ -2189,30 +2247,25 @@ Phase 25
 
 # 9. Current Known Gaps
 
-The following items were not fully specified yet and must be designed during implementation:
+The Windows-local MVP is working. The following items remain intentionally incomplete or require deployment-specific decisions:
 
-1. **Exact Neo4j schema and constraints**
-2. **Exact PostgreSQL schema**
-3. **Exact relationship taxonomy**
-4. **Entity-resolution algorithm**
-5. **NER/relationship-extraction model selection**
-6. **Synthetic dataset design**
-7. **Pattern-detection definitions and thresholds**
-8. **Temporal-analysis methodology**
-9. **Geographic-analysis methodology**
-10. **AI model selection**
-11. **RAG retrieval strategy**
-12. **Multi-agent orchestration design**
-13. **Evidence retention/access model**
-14. **Audit-log storage and immutability strategy**
-15. **Deployment architecture**
-16. **Evaluation dataset and metrics**
-17. **Performance/scalability requirements**
-18. **Backup/recovery strategy**
-19. **Security threat model**
-20. **Data governance and retention rules**
+1. PostgreSQL and Neo4j runtime validation (the local profile uses SQLite plus a relational graph projection).
+2. OCR for scanned PDFs and images.
+3. PDF report export and page-level source coordinates.
+4. Shortest-path UI/API as a dedicated analysis operation.
+5. Cross-community, transaction-sequence, and abrupt-change signal detectors.
+6. Community-over-time and timeline/map brushing.
+7. Full case detail UI for notes, history, assignments, and saved context.
+8. Analyst assignment and case-level access policy.
+9. Document chunk retrieval and span-level RAG citation validation.
+10. Independent asynchronous multi-agent execution.
+11. Database-level audit immutability, legal hold, retention, and WORM storage.
+12. MFA/SSO, shared rate limiting, malware scanning, and external penetration testing.
+13. Labeled real-world evaluation data and calibrated extraction/resolution thresholds.
+14. Performance/scalability testing and background worker deployment.
+15. HTTPS reverse proxy and Windows service installation in a target environment.
 
-These should be settled before the corresponding phases are marked complete.
+These gaps are documented rather than silently represented as completed production capabilities.
 
 ---
 
@@ -2220,7 +2273,7 @@ These should be settled before the corresponding phases are marked complete.
 
 The project should not be considered complete merely because the graph appears on screen.
 
-The system is considered functionally complete when:
+The local Windows MVP is considered functionally complete when:
 
 ```text
 ✓ Admin can authenticate

@@ -1,0 +1,3 @@
+location_id,name,entity_type,address,notes
+LOC-1001,Warehouse 9, LOCATION,"Sector 18, Navi Mumbai",Synthetic demonstration location
+LOC-1002,East Port Gate, LOCATION,"Port approach road",Synthetic demonstration location

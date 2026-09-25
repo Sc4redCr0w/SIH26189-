@@ -1,0 +1,3 @@
+event_id,name,event_type,timestamp,location,case_number
+EVT-001,Warehouse 9 night transfer,EVENT,2026-09-12T22:10:00+05:30,Warehouse 9,CASE-2026-001
+EVT-002,East Port Gate vehicle movement,EVENT,2026-09-14T19:40:00+05:30,East Port Gate,CASE-2026-001

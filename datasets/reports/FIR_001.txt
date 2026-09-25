@@ -1,0 +1,8 @@
+SYNTHETIC DEMONSTRATION REPORT
+Case: CASE-2026-001
+
+On 12 September 2026, Aarav Mehta met Rohan Kulkarni near Warehouse 9.
+Rohan Kulkarni used phone +919820041122 and later contacted Meera Shah.
+Meera Shah was associated with Devika Rao. A vehicle registered as MH12AB4821 was observed near the east port gate.
+
+This file contains fictional data generated for software testing. It does not describe a real person, organization, location, or investigation.
