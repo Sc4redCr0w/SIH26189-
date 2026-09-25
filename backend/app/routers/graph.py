@@ -28,13 +28,19 @@ def explore_graph(
     end_date: datetime | None = Query(default=None, description="Only relationships at or before this time"),
     limit: int = Query(default=150, ge=1, le=500),
 ) -> GraphResponse:
-    entity_statement = select(Entity).where(Entity.record_state == "ACTIVE")
+    entity_statement = select(Entity).where(Entity.record_state == "ACTIVE").order_by(Entity.updated_at.desc())
     if entity_types:
         allowed_types = {item.strip().upper() for item in entity_types.split(",") if item.strip()}
         entity_statement = entity_statement.where(Entity.entity_type.in_(allowed_types))
     if case_id:
         entity_statement = entity_statement.where(Entity.case_id == case_id)
-    entities = db.scalars(entity_statement.limit(limit)).all()
+    if center_id:
+        # A center-based graph must not depend on an arbitrary LIMIT page.
+        # Read the filtered active set, then bound the rendered result after
+        # traversal so the requested entity and its neighbors remain visible.
+        entities = db.scalars(entity_statement).all()
+    else:
+        entities = db.scalars(entity_statement.limit(limit)).all()
     entity_by_id = {entity.id: entity for entity in entities}
     if not entities:
         return GraphResponse(nodes=[], edges=[], depth=depth, center_id=center_id)
@@ -78,6 +84,14 @@ def explore_graph(
         selected_ids = set(entity_by_id)
 
     selected_entities = [entity for entity in entities if entity.id in selected_ids]
+    if len(selected_entities) > limit:
+        if center_id:
+            center_entity = next((entity for entity in selected_entities if entity.id == center_id), None)
+            selected_entities = ([center_entity] if center_entity else []) + [entity for entity in selected_entities if entity.id != center_id][: max(0, limit - 1)]
+            selected_ids = {entity.id for entity in selected_entities}
+        else:
+            selected_entities = selected_entities[:limit]
+            selected_ids = {entity.id for entity in selected_entities}
     selected_relationships = [item for item in relationships if item.source_id in selected_ids and item.target_id in selected_ids]
     degree: dict[str, int] = defaultdict(int)
     for relationship in selected_relationships:

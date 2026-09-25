@@ -281,12 +281,21 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => Promise<voi
     window.setTimeout(() => setToast(null), 4200);
   };
 
-  const loadGraph = async (nextSearch = search, nextDepth = depth) => {
-    const match = entities.find((entity) => entity.name.toLowerCase() === nextSearch.toLowerCase() || entity.aliases.some((alias) => alias.toLowerCase() === nextSearch.toLowerCase())) ?? entities.find((entity) => entity.name.toLowerCase().includes(nextSearch.toLowerCase()));
+  const loadGraph = async (nextSearch = search, nextDepth = depth, sourceEntities?: Entity[]) => {
+    // Refresh the entity list before resolving a search match. React state
+    // updates are asynchronous, so a newly created entity may not be in the
+    // closure that handled the create callback yet.
+    const availableEntities = sourceEntities ?? await getEntities({ limit: 150 });
+    if (!sourceEntities) setEntities(availableEntities);
+    const normalizedSearch = nextSearch.trim().toLowerCase();
+    const match = normalizedSearch
+      ? availableEntities.find((entity) => entity.name.toLowerCase() === normalizedSearch || entity.aliases.some((alias) => alias.toLowerCase() === normalizedSearch)) ?? availableEntities.find((entity) => entity.name.toLowerCase().includes(normalizedSearch))
+      : undefined;
     const result = await getGraph({ center_id: match?.id, depth: nextDepth, relationship_types: relationshipFilter || undefined, entity_types: entityTypeFilter || undefined, start_date: startDate ? new Date(startDate).toISOString() : undefined, end_date: endDate ? new Date(endDate).toISOString() : undefined });
     setGraph(result);
     setSelectedNode(null);
     setSelectedEdge(null);
+    return result;
   };
 
   const refresh = async () => {
@@ -301,7 +310,7 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => Promise<voi
       setTimeline(timelineResult);
       setGeo(geoResult);
       if (user.role === "ADMIN") setCandidates(await getCandidates({ status: "PENDING" }));
-      await loadGraph("", depth);
+      await loadGraph("", depth, entityResult);
       if (user.role === "ADMIN" || user.role === "AUDITOR") setAudit(await getAuditEvents());
       if (user.role === "ADMIN") setUsers(await getUsers());
     } catch (error) {
