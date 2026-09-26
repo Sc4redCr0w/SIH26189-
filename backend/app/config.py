@@ -25,6 +25,15 @@ class Settings(BaseSettings):
     ollama_url: str = "http://127.0.0.1:11434"
     ollama_model: str = "llama3.2:3b"
 
+    camera_detection_enabled: bool = True
+    camera_demo_mode: bool = False
+    camera_detection_cooldown_seconds: float = 10.0
+    camera_frame_interval_seconds: float = 0.08
+    camera_evidence_pre_event_frames: int = 2
+    camera_evidence_post_event_frames: int = 2
+    camera_evidence_clip_enabled: bool = False
+    camera_auto_start: bool = False
+
     jwt_secret: str = Field(default="development-only-change-me", min_length=16)
     jwt_algorithm: str = "HS256"
     access_token_minutes: int = 60

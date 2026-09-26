@@ -161,6 +161,113 @@ class entity_evidence(Base):  # noqa: N801 - association table follows SQLAlchem
     relation: Mapped[str] = mapped_column(String(32), default="MENTIONED_IN")
 
 
+class Camera(Base):
+    __tablename__ = "cameras"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True, default=lambda: new_id("CAM"))
+    camera_name: Mapped[str] = mapped_column(String(160), index=True)
+    source_type: Mapped[str] = mapped_column(String(32), index=True)
+    source_uri: Mapped[str] = mapped_column(String(1000))
+    location_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id"), nullable=True, index=True)
+    location_name: Mapped[str] = mapped_column(String(240), default="")
+    latitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    longitude: Mapped[float | None] = mapped_column(Float, nullable=True)
+    timezone: Mapped[str] = mapped_column(String(64), default="UTC")
+    description: Mapped[str] = mapped_column(Text, default="")
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
+    record_state: Mapped[str] = mapped_column(String(24), default="ACTIVE", index=True)
+    status: Mapped[str] = mapped_column(String(24), default="STOPPED", index=True)
+    last_frame_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_detection_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_error: Mapped[str] = mapped_column(Text, default="")
+    detection_count: Mapped[int] = mapped_column(Integer, default=0)
+    case_id: Mapped[str | None] = mapped_column(ForeignKey("cases.id"), nullable=True, index=True)
+    created_by_id: Mapped[str | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, onupdate=utc_now)
+    metadata_json: Mapped[dict[str, Any]] = mapped_column("metadata", JSON, default=dict)
+
+    created_by: Mapped[User | None] = relationship()
+    observations: Mapped[list[CameraObservation]] = relationship(back_populates="camera", cascade="all, delete-orphan")
+
+
+class CameraObservation(Base):
+    __tablename__ = "camera_observations"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True, default=lambda: new_id("OBS"))
+    camera_id: Mapped[str] = mapped_column(ForeignKey("cameras.id"), index=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, index=True)
+    frame_number: Mapped[int] = mapped_column(Integer, default=0)
+    bbox_x: Mapped[int] = mapped_column(Integer, default=0)
+    bbox_y: Mapped[int] = mapped_column(Integer, default=0)
+    bbox_width: Mapped[int] = mapped_column(Integer, default=0)
+    bbox_height: Mapped[int] = mapped_column(Integer, default=0)
+    detection_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    confidence_method: Mapped[str] = mapped_column(String(80), default="HAAR_CASCADE_BINARY")
+    evidence_id: Mapped[str | None] = mapped_column(ForeignKey("evidence.id"), nullable=True, index=True)
+    annotated_evidence_id: Mapped[str | None] = mapped_column(ForeignKey("evidence.id"), nullable=True)
+    clip_evidence_id: Mapped[str | None] = mapped_column(ForeignKey("evidence.id"), nullable=True)
+    location_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id"), nullable=True, index=True)
+    location_name: Mapped[str] = mapped_column(String(240), default="")
+    case_id: Mapped[str | None] = mapped_column(ForeignKey("cases.id"), nullable=True, index=True)
+    review_status: Mapped[str] = mapped_column(String(32), default="PENDING_REVIEW", index=True)
+    is_simulated: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    simulation_label: Mapped[str] = mapped_column(String(240), default="")
+    suggested_person_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id"), nullable=True)
+    created_by_id: Mapped[str | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, index=True)
+    metadata_json: Mapped[dict[str, Any]] = mapped_column("metadata", JSON, default=dict)
+
+    camera: Mapped[Camera] = relationship(back_populates="observations")
+    reviews: Mapped[list[ObservationReview]] = relationship(back_populates="observation", cascade="all, delete-orphan")
+    evidence_links: Mapped[list[CameraEvidence]] = relationship(back_populates="observation", cascade="all, delete-orphan")
+
+
+class CameraEvidence(Base):
+    __tablename__ = "camera_evidence"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True, default=lambda: new_id("CEV"))
+    observation_id: Mapped[str] = mapped_column(ForeignKey("camera_observations.id"), index=True)
+    evidence_id: Mapped[str] = mapped_column(ForeignKey("evidence.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(32), default="RAW_FRAME")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+    observation: Mapped[CameraObservation] = relationship(back_populates="evidence_links")
+    evidence: Mapped[Evidence] = relationship()
+
+
+class ObservationReview(Base):
+    __tablename__ = "observation_reviews"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True, default=lambda: new_id("REV"))
+    observation_id: Mapped[str] = mapped_column(ForeignKey("camera_observations.id"), index=True)
+    reviewer_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
+    decision: Mapped[str] = mapped_column(String(32), index=True)
+    associated_person_id: Mapped[str | None] = mapped_column(ForeignKey("entities.id"), nullable=True, index=True)
+    notes: Mapped[str] = mapped_column(Text, default="")
+    reviewed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, index=True)
+
+    observation: Mapped[CameraObservation] = relationship(back_populates="reviews")
+    reviewer: Mapped[User | None] = relationship()
+    associated_person: Mapped[Entity | None] = relationship(foreign_keys=[associated_person_id])
+
+
+class PersonReferencePhoto(Base):
+    __tablename__ = "person_reference_photos"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True, default=lambda: new_id("PREF"))
+    entity_id: Mapped[str] = mapped_column(ForeignKey("entities.id"), index=True)
+    evidence_id: Mapped[str] = mapped_column(ForeignKey("evidence.id"), index=True)
+    label: Mapped[str] = mapped_column(String(160), default="Reference photo")
+    notes: Mapped[str] = mapped_column(Text, default="")
+    created_by_id: Mapped[str | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+    entity: Mapped[Entity] = relationship()
+    evidence: Mapped[Evidence] = relationship()
+    created_by: Mapped[User | None] = relationship()
+
+
 class Relationship(Base):
     __tablename__ = "relationships"
 

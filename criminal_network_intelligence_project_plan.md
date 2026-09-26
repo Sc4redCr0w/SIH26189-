@@ -2022,6 +2022,66 @@ One reproducible deployment procedure.
 
 ---
 
+# Phase 26 — Camera Monitoring and Visual Evidence
+
+### Status
+[x] DONE
+
+### Objective
+
+Add multi-source camera monitoring, local face **detection**, automatic evidence
+capture, a human review queue, and manual Person association, without introducing
+facial recognition or biometric identification.
+
+### Safety boundary
+
+- Face **detection only**. No embeddings, no recognition, no biometric watchlists.
+- A detection is stored as a `CameraObservation`, never as an identity.
+- `Person -> HUMAN_VERIFIED_OBSERVATION -> CameraObservation` is written only
+  after an authorized human reviewer selects a Person.
+- Reference photos on a Person record are stored for human review only.
+- A scripted "match" demonstration requires `CNI_CAMERA_DEMO_MODE=true` and is
+  labeled `DEMO SIMULATION - NOT BIOMETRIC IDENTIFICATION` in the UI, in the
+  evidence metadata, and in the audit event.
+
+### Delivered
+
+```text
+Sources        WEBCAM, VIDEO_FILE, HTTP_STREAM, RTSP (one worker thread each)
+Detection      OpenCV Haar cascade, bounding boxes, no identity label
+Evidence       raw frame + annotated frame (+ optional short clip)
+Throttling     per-camera cooldown, default 10 seconds
+Review         PENDING_REVIEW -> VERIFIED_OBSERVATION | REJECTED | ASSOCIATED_WITH_ENTITY
+Graph          CAMERA, LOCATION, CAMERA_OBSERVATION entities with
+               CAPTURED_BY / LOCATED_AT / HUMAN_VERIFIED_OBSERVATION edges
+Realtime       WebSocket events: CAMERA_CONNECTED, CAMERA_DISCONNECTED,
+               CAMERA_STATUS, FACE_DETECTED, EVIDENCE_CREATED,
+               REVIEW_REQUIRED, REVIEW_COMPLETED
+UI             /admin/cameras, /monitoring, /monitoring/review, /monitoring/events/:id
+Roles          Admin configures and controls streams, Analyst reviews,
+               Auditor reads history, all enforced server-side
+Audit          CAMERA_CREATED/UPDATED/STARTED/STOPPED/ARCHIVED,
+               CAMERA_OBSERVATION_CREATED, CAMERA_EVIDENCE_VIEWED,
+               OBSERVATION_VERIFIED/REJECTED/ASSOCIATED_WITH_PERSON,
+               PERSON_REFERENCE_PHOTO_ADDED
+```
+
+### Verification
+
+- `backend/tests`: 41 tests, including worker isolation, cooldown, evidence
+  capture, review flow, manual association, role enforcement, and demo-mode
+  labelling. Tests run against an isolated temporary database.
+- `scripts/verify-camera-e2e.py`: 38 live end-to-end checks against a running
+  backend in demo mode.
+- `scripts/setup-camera-demo.ps1`: registers three demo sources without CCTV
+  hardware.
+
+### Documentation
+
+See `docs/camera-module.md` and section 21 of `DEMO_STEPS.txt`.
+
+---
+
 # 6. Final Feature Checklist
 
 ## User and Security

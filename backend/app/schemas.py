@@ -253,6 +253,130 @@ class EvidenceTrace(BaseModel):
     case: dict[str, Any] | None = None
 
 
+class CameraCreate(BaseModel):
+    camera_name: str = Field(min_length=2, max_length=160)
+    source_type: str = Field(pattern="^(WEBCAM|VIDEO_FILE|HTTP_STREAM|RTSP)$")
+    source_uri: str = Field(min_length=1, max_length=1000)
+    location_id: str | None = None
+    location_name: str = Field(default="", max_length=240)
+    latitude: float | None = None
+    longitude: float | None = None
+    timezone: str = Field(default="UTC", max_length=64)
+    description: str = Field(default="", max_length=10000)
+    enabled: bool = True
+    case_id: str | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class CameraUpdate(BaseModel):
+    camera_name: str | None = Field(default=None, min_length=2, max_length=160)
+    source_type: str | None = Field(default=None, pattern="^(WEBCAM|VIDEO_FILE|HTTP_STREAM|RTSP)$")
+    source_uri: str | None = Field(default=None, min_length=1, max_length=1000)
+    location_id: str | None = None
+    location_name: str | None = Field(default=None, max_length=240)
+    latitude: float | None = None
+    longitude: float | None = None
+    timezone: str | None = Field(default=None, max_length=64)
+    description: str | None = Field(default=None, max_length=10000)
+    enabled: bool | None = None
+    case_id: str | None = None
+    metadata: dict[str, Any] | None = None
+
+
+class CameraOut(ORMModel):
+    # `metadata` is a reserved SQLAlchemy declarative attribute, so the ORM
+    # column is `metadata_json`. Accept both the field name and the alias so
+    # dictionary-built responses keep their payload.
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
+
+    id: str
+    camera_name: str
+    source_type: str
+    source_uri_masked: str
+    location_id: str | None = None
+    location_name: str
+    latitude: float | None = None
+    longitude: float | None = None
+    timezone: str
+    description: str
+    enabled: bool
+    record_state: str = "ACTIVE"
+    status: str
+    last_frame_at: datetime | None = None
+    last_detection_at: datetime | None = None
+    last_error: str
+    detection_count: int
+    case_id: str | None = None
+    created_by_id: str | None = None
+    created_at: datetime
+    updated_at: datetime
+    metadata: dict[str, Any] = Field(default_factory=dict, validation_alias="metadata_json")
+
+
+class CameraStatusOut(BaseModel):
+    camera_id: str
+    status: str
+    source_type: str
+    last_frame_at: datetime | None = None
+    last_detection_at: datetime | None = None
+    detection_count: int
+    active_detections: int
+    last_error: str
+    demo_mode: bool = False
+
+
+class ObservationReviewCreate(BaseModel):
+    decision: str = Field(pattern="^(VERIFY|REJECT|ASSOCIATE)$")
+    associated_person_id: str | None = None
+    notes: str = Field(default="", max_length=10000)
+
+
+class ObservationReviewOut(ORMModel):
+    id: str
+    observation_id: str
+    reviewer_id: str | None = None
+    decision: str
+    associated_person_id: str | None = None
+    notes: str
+    reviewed_at: datetime
+
+
+class CameraObservationOut(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: str
+    camera_id: str
+    camera_name: str = ""
+    timestamp: datetime
+    frame_number: int
+    bbox: dict[str, int]
+    detection_confidence: float | None = None
+    confidence_method: str
+    evidence_id: str | None = None
+    annotated_evidence_id: str | None = None
+    clip_evidence_id: str | None = None
+    location_id: str | None = None
+    location_name: str = ""
+    case_id: str | None = None
+    review_status: str
+    is_simulated: bool
+    simulation_label: str
+    suggested_person_id: str | None = None
+    created_at: datetime
+    metadata: dict[str, Any] = Field(default_factory=dict)
+    reviews: list[ObservationReviewOut] = Field(default_factory=list)
+
+
+class PersonReferencePhotoOut(ORMModel):
+    id: str
+    entity_id: str
+    evidence_id: str
+    label: str
+    notes: str
+    created_by_id: str | None = None
+    created_at: datetime
+
+
 class CandidateOut(ORMModel):
     id: str
     evidence_id: str

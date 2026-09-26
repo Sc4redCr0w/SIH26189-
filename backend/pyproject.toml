@@ -16,6 +16,7 @@ dependencies = [
   "sqlalchemy==2.0.37",
   "psycopg[binary]==3.2.3",
   "python-multipart==0.0.20",
+  "opencv-python==4.10.0.84",
   "PyJWT==2.10.1",
 ]
 

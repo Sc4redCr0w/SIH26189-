@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import __version__
 from .bootstrap import initialize_database
+from .camera_manager import camera_manager
 from .config import get_settings
 from .db import database_status
 from .middleware import LoginRateLimitMiddleware, SecurityHeadersMiddleware
@@ -16,6 +17,7 @@ from .routers import (
     audit,
     auth,
     cases,
+    cameras,
     entities,
     evidence,
     extractions,
@@ -32,7 +34,12 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     initialize_database()
-    yield
+    if settings.camera_auto_start:
+        camera_manager.start_all()
+    try:
+        yield
+    finally:
+        camera_manager.stop_all()
 
 
 app = FastAPI(
@@ -60,6 +67,7 @@ for router in (
     relationships.router,
     cases.saved_router,
     cases.router,
+    cameras.router,
     evidence.router,
     extractions.router,
     imports.router,

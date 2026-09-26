@@ -32,6 +32,9 @@ The demonstration should show that:
 13. The auditor can inspect an append-oriented activity trail.
 14. Analysts cannot modify core source data through the backend.
 15. Every important action is logged.
+16. Camera sources stream independently and are controlled by role.
+17. Face detection produces evidence-backed observations, never automatic identity.
+18. A human reviewer decides whether an observation is associated with a Person.
 
 The correct presentation is:
 
@@ -161,7 +164,7 @@ Run the automated evaluation suite with:
 
 This should report:
 
-    Backend tests:       27 passed
+    Backend tests:       41 passed
     Frontend typecheck:  passed
     Frontend build:      passed
 
@@ -768,7 +771,160 @@ Explain:
 The Auditor can inspect history but cannot manage users or mutate source data.
 
 
-21. ANALYST READ-ONLY DEMONSTRATION
+21. CAMERA MONITORING AND VISUAL EVIDENCE
+========================================
+
+This module performs face DETECTION only. It does not identify anyone.
+
+The system never creates face embeddings, never matches faces, and never has a
+biometric watchlist. A camera detection is stored as an observation. A Person
+association is written to the graph only after an authorized human reviewer
+selects a Person in the review queue.
+
+Optional preparation, in a PowerShell window while the backend is running:
+
+    .\scripts\setup-camera-demo.ps1 -DemoMode -Start
+
+This registers three independent sources:
+
+    Demo Camera 01 - Main Gate     WEBCAM index 0                      Main Gate
+    Demo Camera 02 - Parking       VIDEO_FILE demo-parking.mp4          Parking Area
+    Demo Camera 03 - Entrance      VIDEO_FILE demo-entrance.mp4         Building Entrance
+
+If CNI_CAMERA_DEMO_MODE=true is set in .env, the interface shows a persistent
+banner:
+
+    DEMO SIMULATION MODE - NOT BIOMETRIC IDENTIFICATION
+
+CAMERA SOURCES (Admin only)
+
+Open:
+
+    http://127.0.0.1:5173/admin/cameras
+
+Show:
+
+1. Add a camera with source type, source URI, location, and timezone.
+2. Start and stop an individual source.
+3. Edit the configuration.
+4. Archive a source.
+5. Show masked stream URIs so embedded credentials are not exposed.
+6. Show that the Analyst role sees no mutation controls.
+
+LIVE MONITORING
+
+Open:
+
+    http://127.0.0.1:5173/monitoring
+
+Show for each camera:
+
+1. Live annotated frame.
+2. Bounding boxes around detected faces.
+3. Detection count and total observations.
+4. Connection status and last frame timestamp.
+5. Location and camera name.
+6. That one stopped or failed source does not stop the other sources.
+7. That no person name is ever drawn on the frame.
+
+Explain:
+
+    "The box means a face-shaped region was detected. It does not mean the system knows
+    who the person is."
+
+Note for the presenter: the bundled synthetic clips contain a drawn subject that
+the prototype detector does not classify as a face. Real detection requires a real
+face. Use the webcam, or set a VIDEO_FILE camera to an MP4 that contains a person.
+The synthetic clips still demonstrate independent multi-source capture, evidence
+storage, cooldown throttling, review, and graph integration through demo
+simulation events.
+
+A WEBCAM source records real imagery from the machine. Only point it at yourself
+or at a consenting subject, and delete the captured frames after the
+demonstration.
+
+DETECTION REVIEW
+
+Open:
+
+    http://127.0.0.1:5173/monitoring/review
+
+Show:
+
+1. The pending observation list with camera, time, and location.
+2. The annotated evidence image with the bounding box.
+3. Camera ID, location, timestamp, and detector metadata.
+4. Detection confidence. The prototype uses a binary Haar cascade, so the
+   interface shows "Not scored by binary detector" rather than inventing a
+   percentage.
+5. Duplicate throttling. A continuously visible face produces one event per
+   cooldown window, not hundreds.
+6. Mark invalid.
+7. Verify observation.
+8. Search for an existing Person and associate it manually.
+
+Explain:
+
+    "The reviewer is comparing the camera evidence with the record set. The software
+    does not compare faces."
+
+KNOWLEDGE GRAPH RESULT
+
+Return to Network Explorer and search the observation ID.
+
+Show:
+
+    Person -[HUMAN_VERIFIED_OBSERVATION]-> Camera observation -[CAPTURED_BY]-> Camera
+    Camera observation -[LOCATED_AT]-> Location
+
+Show that the edge carries the evidence reference, and that the review notes state
+that the association was made by a human reviewer.
+
+Explain:
+
+    "The graph received the association after a human decision and points back to the
+    stored evidence frame."
+
+PERSON REFERENCE PHOTOS
+
+As Admin, upload a reference photo to a Person record.
+
+Explain:
+
+    "Reference photos are stored for human review and record-keeping. They are never
+    used for automated matching."
+
+AUDIT TRAIL
+
+The following camera actions are recorded:
+
+    CAMERA_CREATED
+    CAMERA_UPDATED
+    CAMERA_STARTED
+    CAMERA_STOPPED
+    CAMERA_ARCHIVED
+    CAMERA_OBSERVATION_CREATED
+    CAMERA_EVIDENCE_VIEWED
+    OBSERVATION_VERIFIED
+    OBSERVATION_REJECTED
+    OBSERVATION_ASSOCIATED_WITH_PERSON
+    PERSON_REFERENCE_PHOTO_ADDED
+
+WHAT MUST NOT BE CLAIMED IN THIS SECTION
+
+Do not say:
+
+    "The system identified the person in the footage."
+    "The camera matched this face to the suspect."
+    "The AI recognised the individual."
+
+Say instead:
+
+    "A face-shaped region was detected and the frame was preserved as evidence."
+    "A human reviewer associated the observation with a person record."
+
+
+22. ANALYST READ-ONLY DEMONSTRATION
 =====================================
 
 Logout and login as:
@@ -816,7 +972,7 @@ If you want to demonstrate the server-side rule from PowerShell, use:
 The final request should return HTTP 403.
 
 
-22. FRESH RESET FOR A REPEATABLE DEMO
+23. FRESH RESET FOR A REPEATABLE DEMO
 =======================================
 
 Only use this when you want to delete local demonstration data.
@@ -840,7 +996,7 @@ Warning:
     a real investigation database.
 
 
-23. WHAT CAN BE PERFORMED
+24. WHAT CAN BE PERFORMED
 ==========================
 
 Administrator:
@@ -856,6 +1012,8 @@ Administrator:
 - Generate reports.
 - Run analytics.
 - Review audit history.
+- Configure, start, stop, and archive camera sources.
+- Review camera observations and manually associate a Person.
 
 Analyst:
 
@@ -866,19 +1024,22 @@ Analyst:
 - Add case notes.
 - Save searches and graph views.
 - Generate reports.
+- View live camera feeds and detection events.
+- Review camera observations and perform a permitted manual association.
 
 Auditor / Supervisor:
 
 - Inspect records.
 - Review audit history.
 - Inspect analysis and evidence context.
+- Inspect camera configuration, observation history, and review actions.
 - Export audit records.
 
 Nobody should be able to bypass these rules through the frontend alone. Authorization is
 enforced by FastAPI dependencies on the backend.
 
 
-24. WHAT CAN BE SEEN
+25. WHAT CAN BE SEEN
 ====================
 
 The application can show:
@@ -903,6 +1064,9 @@ The application can show:
 - Saved searches and graph views.
 - Report versions and snapshots.
 - Audit events.
+- Camera sources, live annotated frames, and detection counts.
+- Camera observations with bounding boxes, timestamps, and evidence.
+- Human review decisions and manual Person associations.
 
 Node colors are semantic:
 
@@ -915,7 +1079,7 @@ Node colors are semantic:
 A yellow node does not mean criminal. It means the record or pattern requires review.
 
 
-25. WHAT CAN BE INFERRED
+26. WHAT CAN BE INFERRED
 ==========================
 
 The system can calculate or summarize:
@@ -960,7 +1124,7 @@ AI-assisted:
 - Citations to source records.
 
 
-26. WHAT MUST NOT BE INFERRED
+27. WHAT MUST NOT BE INFERRED
 ==============================
 
 The system must not claim that:
@@ -975,6 +1139,8 @@ The system must not claim that:
 - An extracted candidate is trusted before review.
 - An AI answer is factual without citations.
 - An analytical signal is a legal conclusion.
+- A detected face identifies a person.
+- A simulated demo event is a real biometric match.
 
 Use this wording:
 
@@ -990,7 +1156,7 @@ Avoid this wording:
     "This entity is an offender."
 
 
-27. OPTIONAL OLLAMA DEMONSTRATION
+28. OPTIONAL OLLAMA DEMONSTRATION
 ==================================
 
 Ollama is optional and disabled by default.
@@ -1013,7 +1179,7 @@ The model is used for phrasing only. It is not allowed to invent facts, relation
 legal statuses, or evidence references.
 
 
-28. OPTIONAL CSV IMPORT
+29. OPTIONAL CSV IMPORT
 =======================
 
 The Windows helper script is:
@@ -1036,7 +1202,7 @@ The importer:
 Imported relationships are not silently treated as fully trusted.
 
 
-29. TROUBLESHOOTING
+30. TROUBLESHOOTING
 ===================
 
 Backend not found:
@@ -1068,10 +1234,10 @@ Run the full evaluation:
     .\scripts\evaluate.ps1
 
 If a local database is corrupted, stop the servers and use the fresh-reset procedure in
-section 22 only after confirming that the data is disposable.
+section 23 only after confirming that the data is disposable.
 
 
-30. CLOSING STATEMENT
+31. CLOSING STATEMENT
 ======================
 
 A strong closing statement is:

@@ -4,6 +4,9 @@ import type {
   AuditEvent,
   CaseRecord,
   Candidate,
+  Camera,
+  CameraObservation,
+  CameraStatus,
   CaseNote,
   DuplicateMatch,
   Entity,
@@ -24,6 +27,10 @@ import type {
 } from "./types";
 
 const apiBase = (import.meta.env.VITE_API_URL as string | undefined) ?? "/api/v1";
+
+export function apiUrl(path: string): string {
+  return `${apiBase}${path}`;
+}
 const tokenKey = "signal-atlas-token";
 
 export class ApiError extends Error {
@@ -151,6 +158,84 @@ export function getTimeline(params: { case_id?: string; start_date?: string; end
 
 export function runSignals(params: { case_id?: string; threshold_multiplier?: number } = {}): Promise<SignalResponse> {
   return request<SignalResponse>(`/analytics/signals${query(params)}`, { method: "POST" });
+}
+
+export function getCameras(params: { location?: string; status?: string } = {}): Promise<Camera[]> {
+  return request<Camera[]>(`/cameras${query(params)}`);
+}
+
+export function createCamera(payload: {
+  camera_name: string;
+  source_type: string;
+  source_uri: string;
+  location_name?: string;
+  timezone?: string;
+  description?: string;
+  enabled?: boolean;
+  metadata?: Record<string, unknown>;
+}): Promise<Camera> {
+  return request<Camera>("/cameras", { method: "POST", body: JSON.stringify(payload) });
+}
+
+export function updateCamera(cameraId: string, payload: Partial<{
+  camera_name: string;
+  source_type: string;
+  source_uri: string;
+  location_name: string;
+  timezone: string;
+  description: string;
+  enabled: boolean;
+  metadata: Record<string, unknown>;
+}>): Promise<Camera> {
+  return request<Camera>(`/cameras/${cameraId}`, { method: "PATCH", body: JSON.stringify(payload) });
+}
+
+export function archiveCamera(cameraId: string): Promise<void> {
+  return request<void>(`/cameras/${cameraId}`, { method: "DELETE" });
+}
+
+export function startCamera(cameraId: string): Promise<CameraStatus> {
+  return request<CameraStatus>(`/cameras/${cameraId}/start`, { method: "POST" });
+}
+
+export function stopCamera(cameraId: string): Promise<CameraStatus> {
+  return request<CameraStatus>(`/cameras/${cameraId}/stop`, { method: "POST" });
+}
+
+export function getCameraStatus(cameraId: string): Promise<CameraStatus> {
+  return request<CameraStatus>(`/cameras/${cameraId}/status`);
+}
+
+export function getCameraObservations(params: { camera_id?: string; status?: string; case_id?: string; limit?: number } = {}): Promise<CameraObservation[]> {
+  return request<CameraObservation[]>(`/cameras/observations/all${query(params)}`);
+}
+
+export function reviewObservation(observationId: string, payload: { decision: "VERIFY" | "REJECT" | "ASSOCIATE"; associated_person_id?: string; notes?: string }): Promise<CameraObservation> {
+  return request<CameraObservation>(`/cameras/observations/${observationId}/review`, { method: "POST", body: JSON.stringify(payload) });
+}
+
+export function latestFrameUrl(cameraId: string, token: string, annotated = true): string {
+  return apiUrl(`/cameras/${cameraId}/latest-frame?token=${encodeURIComponent(token)}&annotated=${annotated ? "1" : "0"}&t=${Date.now()}`);
+}
+
+export function observationFrameUrl(observationId: string, token: string): string {
+  return apiUrl(`/cameras/observations/${observationId}/annotated-frame?token=${encodeURIComponent(token)}&t=${Date.now()}`);
+}
+
+export function getReferencePhotos(entityId: string): Promise<Array<{ id: string; entity_id: string; evidence_id: string; label: string; notes: string; created_at: string }>> {
+  return request(`/cameras/entities/${entityId}/reference-photos`);
+}
+
+export function uploadReferencePhoto(entityId: string, file: File, label: string, notes: string): Promise<{ id: string; entity_id: string; evidence_id: string; label: string; notes: string; created_at: string }> {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("label", label);
+  form.append("notes", notes);
+  return request(`/cameras/entities/${entityId}/reference-photo`, { method: "POST", body: form });
+}
+
+export function referencePhotoUrl(entityId: string, photoId: string, token: string): string {
+  return apiUrl(`/cameras/entities/${entityId}/reference-photos/${photoId}/image?token=${encodeURIComponent(token)}&t=${Date.now()}`);
 }
 
 export function getCandidates(params: { evidence_id?: string; status?: string; candidate_type?: string } = {}): Promise<Candidate[]> {

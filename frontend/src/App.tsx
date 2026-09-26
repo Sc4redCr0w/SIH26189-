@@ -1,13 +1,15 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
+  Camera as CameraIcon,
   CheckCircle,
   CircleNotch,
   Clock,
   CloudArrowUp,
   Database,
   DotsThree,
+  Eye,
   FilePdf,
   FileText,
   Funnel,
@@ -16,6 +18,7 @@ import {
   LockKey,
   MagnifyingGlass,
   MapPin,
+  Monitor,
   PaperPlaneTilt,
   Plus,
   Pulse,
@@ -73,6 +76,9 @@ import {
   uploadEvidence,
 } from "./api";
 import GraphCanvas from "./components/GraphCanvas";
+import CameraModule from "./components/CameraModule";
+import PersonReferencePhotos from "./components/PersonReferencePhotos";
+import { pathToView, viewToPath } from "./routes";
 import type {
   AnalysisResponse,
   AssistantResponse,
@@ -96,7 +102,7 @@ import type {
   User,
 } from "./types";
 
-type View = "command" | "search" | "network" | "timeline" | "geo" | "evidence" | "review" | "cases" | "reports" | "audit" | "users";
+export type View = "command" | "search" | "network" | "timeline" | "geo" | "evidence" | "review" | "cases" | "reports" | "audit" | "users" | "camera-cameras" | "camera-monitoring" | "camera-review" | "camera-event";
 type Toast = { kind: "success" | "error"; message: string } | null;
 
 type NavItem = { id: View; label: string; icon: typeof Scan; adminOnly?: boolean };
@@ -112,6 +118,9 @@ const navItems: NavItem[] = [
   { id: "cases", label: "Cases", icon: Hexagon },
   { id: "reports", label: "Reports", icon: FileText },
   { id: "users", label: "User access", icon: UsersThree, adminOnly: true },
+  { id: "camera-cameras", label: "Camera sources", icon: CameraIcon, adminOnly: true },
+  { id: "camera-monitoring", label: "Live monitoring", icon: Monitor },
+  { id: "camera-review", label: "Detection review", icon: Eye },
   { id: "audit", label: "Audit trail", icon: Pulse, adminOnly: true },
 ];
 
@@ -247,7 +256,24 @@ function LoginScreen({ onLogin, error }: { onLogin: (username: string, password:
 }
 
 function Workspace({ user, onLogout }: { user: User; onLogout: () => Promise<void> }) {
-  const [activeView, setActiveView] = useState<View>("command");
+  const initialRoute = useMemo(() => pathToView(window.location.pathname), []);
+  const [activeView, setActiveView] = useState<View>(initialRoute.view);
+  const [cameraEventId, setCameraEventId] = useState<string | null>(initialRoute.eventId);
+  const navigate = useCallback((next: View) => {
+    setActiveView(next);
+    setCameraEventId(null);
+    const path = viewToPath(next);
+    if (window.location.pathname !== path) window.history.pushState({}, "", path);
+  }, []);
+  useEffect(() => {
+    const onPop = () => {
+      const route = pathToView(window.location.pathname);
+      setActiveView(route.view);
+      setCameraEventId(route.eventId);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   const [health, setHealth] = useState<HealthPayload | null>(null);
   const [entities, setEntities] = useState<Entity[]>([]);
   const [graph, setGraph] = useState<GraphResponse>({ nodes: [], edges: [], depth: 2, center_id: null });
@@ -383,7 +409,7 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => Promise<voi
         <div className="brand-lockup"><div className="brand-mark" aria-hidden="true"><span /><span /><span /></div><div><p className="brand-name">Signal Atlas</p><p className="brand-subtitle">Network intelligence</p></div></div>
         <div className="workspace-label">Workspace</div>
         <nav className="primary-nav" aria-label="Primary navigation">
-          {navItems.filter((item) => !item.adminOnly || user.role === "ADMIN" || user.role === "AUDITOR").map((item) => { const Icon = item.icon; return <button className={`nav-item ${activeView === item.id ? "active" : ""}`} key={item.id} type="button" onClick={() => setActiveView(item.id)}><Icon size={18} weight={activeView === item.id ? "fill" : "regular"} /><span>{item.label}</span>{activeView === item.id && <span className="nav-indicator" />}</button>; })}
+          {navItems.filter((item) => !item.adminOnly || user.role === "ADMIN" || user.role === "AUDITOR").map((item) => { const Icon = item.icon; return <button className={`nav-item ${activeView === item.id ? "active" : ""}`} key={item.id} type="button" onClick={() => navigate(item.id)}><Icon size={18} weight={activeView === item.id ? "fill" : "regular"} /><span>{item.label}</span>{activeView === item.id && <span className="nav-indicator" />}</button>; })}
         </nav>
         <div className="sidebar-spacer" />
         <div className="integrity-card"><div className="integrity-icon"><ShieldCheck size={18} /></div><div><p>Evidence chain</p><strong>{evidence.length} sources indexed</strong></div><span className="status-dot" /></div>
@@ -402,6 +428,7 @@ function Workspace({ user, onLogout }: { user: User; onLogout: () => Promise<voi
         {activeView === "cases" && <CasesView cases={cases} canEdit={canEdit} onCreated={async (item) => { setCases((current) => [item, ...current]); notify("success", "Case created."); }} onError={notify} busy={busy} setBusy={setBusy} />}
         {activeView === "reports" && <ReportsView reports={reports} cases={cases} canEdit={canEdit} onCreated={async (item) => { setReports((current) => [item, ...current]); notify("success", "Report generated from stored records."); }} onError={notify} busy={busy} setBusy={setBusy} onSynthesize={async (caseId) => { const item = await synthesizeReport(caseId); setReports((current) => [item, ...current]); notify("success", "Multi-agent synthesis report generated."); }} onDownload={async (reportId) => { await downloadReport(reportId); notify("success", "Report export downloaded."); }} />}
         {activeView === "users" && user.role === "ADMIN" && <UserAccessView users={users} onCreated={async (item) => { setUsers((current) => [...current, item]); notify("success", "User access created."); }} onError={notify} busy={busy} setBusy={setBusy} />}
+        {(activeView === "camera-cameras" || activeView === "camera-monitoring" || activeView === "camera-review" || activeView === "camera-event") && <CameraModule page={activeView === "camera-cameras" ? "cameras" : activeView === "camera-monitoring" ? "monitoring" : activeView === "camera-event" ? "event" : "review"} userRole={user.role} initialEventId={cameraEventId} onNavigate={(page) => navigate(page === "cameras" ? "camera-cameras" : page === "monitoring" ? "camera-monitoring" : page === "event" ? "camera-event" : "camera-review")} />}
         {activeView === "audit" && (user.role === "ADMIN" || user.role === "AUDITOR") && <AuditView events={audit} onRefresh={async () => setAudit(await getAuditEvents())} />}
         <footer className="app-footer"><span>Signal Atlas / local Windows workspace</span><span>Role: {roleLabel(user.role)} · every mutation is audit logged</span></footer>
       </main>
@@ -533,7 +560,7 @@ function NetworkView({ entities, evidence, graph, search, setSearch, depth, setD
 function ShareIcon() { return <span className="share-glyph">↗</span>; }
 
 function EntityDetail({ entity, canEdit, editing, editForm, setEditForm, onEdit, onSave, onCancel, onArchive, duplicates, onMerge }: { entity: Entity; canEdit: boolean; editing: boolean; editForm: { name: string; status: string; notes: string }; setEditForm: (value: { name: string; status: string; notes: string }) => void; onEdit: () => void; onSave: (event: FormEvent) => Promise<void>; onCancel: () => void; onArchive: () => Promise<void>; duplicates: DuplicateMatch[]; onMerge: (targetId: string) => Promise<void> }) {
-  return <div className="detail-content"><div className="detail-identity"><div className={`entity-avatar large type-${entity.entity_type.toLowerCase()}`}>{initials(entity.name)}</div><div><p className="section-kicker">{entity.entity_type}</p><h3>{entity.name}</h3><span className={`status-chip ${statusClass(entity.status)}`}>{entity.status}</span></div></div>{editing ? <form className="edit-form" onSubmit={onSave}><label className="field-label">Name<input className="text-input" value={editForm.name} onChange={(event) => setEditForm({ ...editForm, name: event.target.value })} /></label><label className="field-label">Status<input className="text-input" value={editForm.status} onChange={(event) => setEditForm({ ...editForm, status: event.target.value })} /></label><label className="field-label">Notes<textarea className="text-input" rows={3} value={editForm.notes} onChange={(event) => setEditForm({ ...editForm, notes: event.target.value })} /></label><div className="edit-actions"><button className="primary-button compact" type="submit">Save changes</button><button className="secondary-button compact" type="button" onClick={onCancel}>Cancel</button></div></form> : <><div className="detail-stats"><div><span>Aliases</span><strong>{entity.aliases.length || "None"}</strong></div><div><span>Record state</span><strong>{entity.record_state}</strong></div></div><div className="detail-section"><span className="detail-label">Notes</span><p>{entity.notes || "No notes attached to this record."}</p></div><div className="detail-section"><span className="detail-label">Provenance</span><p>Created {formatDate(entity.created_at)} · source-backed record {entity.id}</p></div>{duplicates.length > 0 && <div className="duplicate-box"><div className="duplicate-head"><span>Possible duplicates</span><b>{duplicates.length}</b></div>{duplicates.slice(0, 3).map((duplicate) => <div className="duplicate-row" key={duplicate.entity_id}><div><strong>{duplicate.name}</strong><span>{Math.round(duplicate.score * 100)}% · {duplicate.signals.join(", ")}</span></div>{canEdit && <button className="secondary-button compact" type="button" onClick={() => void onMerge(duplicate.entity_id)}>Merge</button>}</div>)}</div>}{canEdit && <div className="detail-actions"><button className="secondary-button compact" type="button" onClick={onEdit}>Edit record</button><button className="danger-button compact" type="button" onClick={() => void onArchive()}>Archive</button></div>}</>}</div>;
+  return <div className="detail-content"><div className="detail-identity"><div className={`entity-avatar large type-${entity.entity_type.toLowerCase()}`}>{initials(entity.name)}</div><div><p className="section-kicker">{entity.entity_type}</p><h3>{entity.name}</h3><span className={`status-chip ${statusClass(entity.status)}`}>{entity.status}</span></div></div>{editing ? <form className="edit-form" onSubmit={onSave}><label className="field-label">Name<input className="text-input" value={editForm.name} onChange={(event) => setEditForm({ ...editForm, name: event.target.value })} /></label><label className="field-label">Status<input className="text-input" value={editForm.status} onChange={(event) => setEditForm({ ...editForm, status: event.target.value })} /></label><label className="field-label">Notes<textarea className="text-input" rows={3} value={editForm.notes} onChange={(event) => setEditForm({ ...editForm, notes: event.target.value })} /></label><div className="edit-actions"><button className="primary-button compact" type="submit">Save changes</button><button className="secondary-button compact" type="button" onClick={onCancel}>Cancel</button></div></form> : <><div className="detail-stats"><div><span>Aliases</span><strong>{entity.aliases.length || "None"}</strong></div><div><span>Record state</span><strong>{entity.record_state}</strong></div></div><div className="detail-section"><span className="detail-label">Notes</span><p>{entity.notes || "No notes attached to this record."}</p></div><div className="detail-section"><span className="detail-label">Provenance</span><p>Created {formatDate(entity.created_at)} · source-backed record {entity.id}</p></div>{entity.entity_type === "PERSON" && <PersonReferencePhotos entityId={entity.id} entityName={entity.name} canEdit={canEdit} />}{duplicates.length > 0 && <div className="duplicate-box"><div className="duplicate-head"><span>Possible duplicates</span><b>{duplicates.length}</b></div>{duplicates.slice(0, 3).map((duplicate) => <div className="duplicate-row" key={duplicate.entity_id}><div><strong>{duplicate.name}</strong><span>{Math.round(duplicate.score * 100)}% · {duplicate.signals.join(", ")}</span></div>{canEdit && <button className="secondary-button compact" type="button" onClick={() => void onMerge(duplicate.entity_id)}>Merge</button>}</div>)}</div>}{canEdit && <div className="detail-actions"><button className="secondary-button compact" type="button" onClick={onEdit}>Edit record</button><button className="danger-button compact" type="button" onClick={() => void onArchive()}>Archive</button></div>}</>}</div>;
 }
 
 function EdgeDetail({ edge, entities, evidence }: { edge: GraphEdge; entities: Entity[]; evidence: Evidence[] }) {

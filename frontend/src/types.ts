@@ -135,6 +135,77 @@ export type Evidence = {
   processed_at: string | null;
 };
 
+export type Camera = {
+  id: string;
+  camera_name: string;
+  source_type: string;
+  source_uri_masked: string;
+  location_id: string | null;
+  location_name: string;
+  latitude: number | null;
+  longitude: number | null;
+  timezone: string;
+  description: string;
+  enabled: boolean;
+  record_state: string;
+  status: string;
+  last_frame_at: string | null;
+  last_detection_at: string | null;
+  last_error: string;
+  detection_count: number;
+  case_id: string | null;
+  created_by_id: string | null;
+  created_at: string;
+  updated_at: string;
+  metadata: Record<string, unknown>;
+};
+
+export type CameraStatus = {
+  camera_id: string;
+  status: string;
+  source_type: string;
+  last_frame_at: string | null;
+  last_detection_at: string | null;
+  detection_count: number;
+  active_detections: number;
+  last_error: string;
+  demo_mode: boolean;
+};
+
+export type CameraReview = {
+  id: string;
+  observation_id: string;
+  reviewer_id: string | null;
+  decision: string;
+  associated_person_id: string | null;
+  notes: string;
+  reviewed_at: string;
+};
+
+export type CameraObservation = {
+  id: string;
+  camera_id: string;
+  camera_name: string;
+  timestamp: string;
+  frame_number: number;
+  bbox: { x: number; y: number; width: number; height: number };
+  detection_confidence: number | null;
+  confidence_method: string;
+  evidence_id: string | null;
+  annotated_evidence_id: string | null;
+  clip_evidence_id: string | null;
+  location_id: string | null;
+  location_name: string;
+  case_id: string | null;
+  review_status: string;
+  is_simulated: boolean;
+  simulation_label: string;
+  suggested_person_id: string | null;
+  created_at: string;
+  metadata: Record<string, unknown>;
+  reviews: CameraReview[];
+};
+
 export type Candidate = {
   id: string;
   evidence_id: string;

@@ -6,6 +6,7 @@ pydantic-settings==2.7.1
 sqlalchemy==2.0.37
 psycopg[binary]==3.2.3
 python-multipart==0.0.20
+opencv-python==4.10.0.84
 PyJWT==2.10.1
 pytest==8.3.4
 httpx==0.28.1
